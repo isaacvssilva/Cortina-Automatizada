@@ -1,0 +1,2 @@
+../API/Src/api_buzzer.c:25:6:buzzerConfig	8	static
+../API/Src/api_buzzer.c:36:6:Desativabuzzer	8	static

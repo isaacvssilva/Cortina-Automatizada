@@ -1,0 +1,9 @@
+/home/isaac/Documents/Microcontroladores/Cortex-Mx/cortina_automatizada/CMSIS/core_cm0plus.h:745:22:NVIC_EnableIRQ	16	static
+../source/cortina_automatizada.c:51:6:PORTx_config	8	static
+../source/cortina_automatizada.c:57:6:TPM_config	8	static
+../source/cortina_automatizada.c:83:6:delay_ms	24	static
+../source/cortina_automatizada.c:94:6:pwm_delay_ms	48	static
+../source/cortina_automatizada.c:112:6:LPTMR0_Init	8	static
+../source/cortina_automatizada.c:131:6:LPTMR0_IRQHandler	16	static
+../source/cortina_automatizada.c:156:6:PORTA_IRQHandler	16	static
+../source/cortina_automatizada.c:173:5:main	8	static
