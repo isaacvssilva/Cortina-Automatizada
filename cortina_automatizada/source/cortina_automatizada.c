@@ -46,8 +46,51 @@
 #include "api_buzzer.h"
 
 /* TODO: insert other definitions and declarations here. */
-extern int direcao;
+/*-----------------------------------------------------------------------------
+ *  Function prototype
+ *-----------------------------------------------------------------------------*/
+void PORTx_config(void);
+void TPM_config(void);
+void delay_ms(float tempo_ms);
+void pwm_delay_ms(float duty_cycle, double periodo);
+void LPTMR0_Init(void);
+void LPTimer_IRQHandler(void);
+void PORTA_IRQHandler(void);
+void low_power_config(void);
 
+extern int direcao;
+/*
+ * @brief   Application entry point.
+ */
+int main(void) {
+
+    /* Init board hardware. */
+    BOARD_InitBootPins();
+    BOARD_InitBootClocks();
+    BOARD_InitBootPeripherals();
+#ifndef BOARD_INIT_DEBUG_CONSOLE_PERIPHERAL
+    /* Init FSL debug console. */
+    BOARD_InitDebugConsole();
+#endif
+    low_power_config();
+    __disable_irq(); /* disable all IRQs */
+    PORTx_config(); /*configurando clock para o modulo PORTx */
+    sensorChuvaConfig();
+    sensorLuminosidadeConfig();
+    TPM_config();
+    LPTMR0_Init();
+    NVIC_EnableIRQ(PORTA_IRQn); /* enable INT30 (bit 30 of ISER[0]) */
+    __enable_irq(); /* global enable IRQs */
+
+   	while (1) {
+   		__DSB();// Use of memory barrier is recommended for portability
+   		__WFI();
+   	}
+}
+
+/*-----------------------------------------------------------------------------
+ *  Function prototype
+ *-----------------------------------------------------------------------------*/
 void PORTx_config(void){
 	SIM->SCGC5 |= SIM_SCGC5_PORTA_MASK;
 	SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK;
@@ -130,9 +173,6 @@ void LPTMR0_Init(void) {
 // Tratador de interrupção do LPTimer
 void LPTimer_IRQHandler(void){
 
-	/*limpando flag*/
-	LPTMR0->CSR |= LPTMR_CSR_TCF_MASK;
-
 	/*fazendo a leitura do nivel logico do pino referente ao LDR*/
 	uint32_t statusLDR = (GPIOB->PDIR >> 1) & 0x01;
 	static uint32_t ultimoStatusLDR = 0;
@@ -149,9 +189,9 @@ void LPTimer_IRQHandler(void){
 		}
 		 ultimoStatusLDR = statusLDR;
 	}
+	/*limpando flag*/
+	LPTMR0->CSR |= LPTMR_CSR_TCF_MASK;
 }
-
-
 
 void PORTA_IRQHandler(void){
 	buzzerConfig();
@@ -167,27 +207,20 @@ void PORTA_IRQHandler(void){
     PORTA->ISFR = (1 << 13); /* clear interrupt flag */
 }
 
-/*
- * @brief   Application entry point.
- */
-int main(void) {
+void low_power_config(void){
+	/*habilitando o modo deep sleep para o low power*/
+	SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
 
-    /* Init board hardware. */
-    BOARD_InitBootPins();
-    BOARD_InitBootClocks();
-    BOARD_InitBootPeripherals();
-#ifndef BOARD_INIT_DEBUG_CONSOLE_PERIPHERAL
-    /* Init FSL debug console. */
-    BOARD_InitDebugConsole();
-#endif
-    __disable_irq(); /* disable all IRQs */
-    PORTx_config(); /*configurando clock para o modulo PORTx */
-    sensorChuvaConfig();
-    sensorLuminosidadeConfig();
-    TPM_config();
-    LPTMR0_Init();
-    NVIC_EnableIRQ(PORTA_IRQn); /* enable INT30 (bit 30 of ISER[0]) */
-    __enable_irq(); /* global enable IRQs */
+	MCG->C1 |= MCG_C1_IREFS_MASK; /*selecionando oscilador interno de baixa frequencia*/
+	MCG->C2 &= ~(MCG_C2_HGO0_MASK); /*configurando o oscilador para operacao de low power*/
+	MCG->C2 &= ~(MCG_C2_IRCS_MASK); /*selecionando clock de referencia interna lenta */
+	while (!(MCG->S & MCG_S_IREFST_MASK));
+	MCG->C1 |= MCG_C1_IRCLKEN_MASK; /*habilitando clock de referencia interna*/
 
-	while(1){}
+	/*Turn off flash during sleep (Flash Doze)*/
+	SIM->FCFG1 |= SIM_FCFG1_FLASHDOZE_MASK;
+
+	/*habilitando funcao Sleep-On-Exit, ideal para aplicacao baseada em interrupcoes
+	 * na qual coloca o processador em modo sleep apos o tratamento da interrupcao */
+	SCB->SCR |= SCB_SCR_SLEEPONEXIT_Msk;
 }

@@ -62,7 +62,7 @@ void abreCortina(void){
 
 
 	const char steps[ ] = {0x9, 0x3, 0x6, 0xC};
-	int32_t rotacao = comprimentoCortina(23.5);
+	int32_t rotacao = comprimentoCortina(80);
 	int i = 0;
 
 	for(int j = 0; j < rotacao; ++j){
@@ -74,6 +74,11 @@ void abreCortina(void){
 		}
 		velocidade_ms(1.6666666666667);
 	}
+	/*limpando pinos a fim de evitar fuga de corrente*/
+	PORTD->PCR[0] &= ~PORT_PCR_MUX_MASK;
+	PORTD->PCR[1] &= ~PORT_PCR_MUX_MASK;
+	PORTD->PCR[2] &= ~PORT_PCR_MUX_MASK;
+	PORTD->PCR[3] &= ~PORT_PCR_MUX_MASK;
 }
 void fechaCortina(void){
 	/* fazendo a mutiplexacao e configurando os pino PD0, PD1, PD2 e PD3 como saida para o motor de passos*/
@@ -94,7 +99,7 @@ void fechaCortina(void){
 	GPIOD->PDDR |= (1U << 3);
 
 	const char steps[ ] = {0x9, 0x3, 0x6, 0xC};
-	int32_t rotacao = comprimentoCortina(23.5);
+	int32_t rotacao = comprimentoCortina(80);
 	int i = 0;
 
 	for(int j = 0; j < rotacao; ++j){
@@ -106,4 +111,9 @@ void fechaCortina(void){
 		}
 		velocidade_ms(1.6666666666667);
 	}
+	/*limpando pinos a fim de evitar fuga de corrente*/
+	PORTD->PCR[0] &= ~PORT_PCR_MUX_MASK;
+	PORTD->PCR[1] &= ~PORT_PCR_MUX_MASK;
+	PORTD->PCR[2] &= ~PORT_PCR_MUX_MASK;
+	PORTD->PCR[3] &= ~PORT_PCR_MUX_MASK;
 }

@@ -34,5 +34,7 @@ void buzzerConfig(void){
 }
 
 void Desativabuzzer(void){
+	/*desativando canal pwm*/
 	TPM2->CONTROLS[0].CnSC = (1 << 5) | (0 << 4) | (1 << 3) | (0 << 2);
+	PORTB->PCR[2] &= ~PORT_PCR_MUX_MASK;  // Limpa os bits de configuração do MUX
 }

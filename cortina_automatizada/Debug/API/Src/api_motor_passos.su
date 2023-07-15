@@ -1,4 +1,4 @@
 ../API/Src/api_motor_passos.c:28:9:comprimentoCortina	24	static
 ../API/Src/api_motor_passos.c:34:6:velocidade_ms	24	static
 ../API/Src/api_motor_passos.c:45:6:abreCortina	24	static
-../API/Src/api_motor_passos.c:78:6:fechaCortina	24	static
+../API/Src/api_motor_passos.c:83:6:fechaCortina	24	static
