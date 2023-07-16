@@ -4,7 +4,6 @@ Repositório dedicado ao projeto final para a disciplina de Microcontroladores, 
 
 ## Descrição do sistema
 
-
 Este projeto visa automatizar o controle de cortinas/persianas de forma acessível, utilizando um microcontrolador para gerenciar as operações e interagir com os sensores. O sistema apresenta as seguintes funcionalidades:
 
 - Controle de Luminosidade: O microcontrolador realiza leituras periódicas de um sensor de luminosidade para determinar se é dia ou noite. Se for identificado que é dia, a cortina é aberta usando um motor de passos. Caso contrário, a cortina permanece fechada.
@@ -20,6 +19,10 @@ Este projeto visa automatizar o controle de cortinas/persianas de forma acessív
 ## Embedded Target
 
 ![Microcontrolador](./img/microcontrolador.jpeg)
+
+## Registros do Funcionamento (Vídeo)
+
+[![Watch the video](img/prototipo.jpeg)](https://youtube.com/shorts/qhE2t_74hEk?feature=share)
 
 ## Materiais Utilizados
 
